@@ -32,7 +32,8 @@ class GetIdentifierTest extends TestCase
     {
         // Given any object that has the method "getKanuuIdentifier".
         $object = new class() {
-            public function getKanuuIdentifier() {
+            public function getKanuuIdentifier()
+            {
                 return 'my_object_identifier';
             }
         };
@@ -49,7 +50,8 @@ class GetIdentifierTest extends TestCase
     {
         // Given an instance of a Eloquent model.
         $model = new class() extends Model {
-            public function getKey() {
+            public function getKey()
+            {
                 return 'my_model_identifier';
             }
         };
@@ -66,10 +68,13 @@ class GetIdentifierTest extends TestCase
     {
         // Given an instance of a Eloquent model that has the "getKanuuIdentifier" method.
         $model = new class() extends Model {
-            public function getKanuuIdentifier() {
+            public function getKanuuIdentifier()
+            {
                 return 'identifier_from_getKanuuIdentifier';
             }
-            public function getKey() {
+
+            public function getKey()
+            {
                 return 'identifier_from_getKey';
             }
         };
