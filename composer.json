@@ -1,0 +1,49 @@
+{
+    "name": "kanuu-io/kanuu-laravel",
+    "description": "Integrate Kanuu to your Laravel application",
+    "keywords": [
+        "kanuu",
+        "paddle",
+        "laravel",
+        "subscription"
+    ],
+    "homepage": "https://github.com/kanuu-io/kanuu-laravel",
+    "license": "MIT",
+    "require": {
+        "php": "^7.4|^8.0",
+        "illuminate/contracts": "^8.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^6.0",
+        "phpunit/phpunit": "^9.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Kanuu\\Laravel\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Kanuu\\Laravel\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit --colors=always",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Kanuu\\Laravel\\KanuuServiceProvider"
+            ],
+            "aliases": {
+                "Kanuu": "Kanuu\\Laravel\\KanuuFacade"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
