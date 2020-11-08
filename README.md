@@ -14,19 +14,19 @@ composer require kanuu-io/kanuu-laravel
 
 ## Getting started
 
-First, add your Kanuu API key to your `.env` file.
+##### 1. Add your Kanuu API key to your `.env` file.
 
 ```php
 KANUU_API_KEY="YOUR_API_KEY_HERE"
 ```
 
-Next, add a route that will redirect your user to Kanuu based on a unique identifier.
+##### 2. Add a route that will redirect your user to Kanuu based on a unique identifier.
 
 ```php
 Route::get('kannu/{identifier}', '\Kanuu\Laravel\RedirectToKanuu')->name('kanuu.redirect');
 ```
 
-Now, all you need to do is add a "Manage your subscription" button that uses that route.
+##### 3. Now, all you need to do is add a "Manage your subscription" button that uses that route.
 
 ```html
 <a href="{{ route('kanuu.redirect') }}" class="...">
