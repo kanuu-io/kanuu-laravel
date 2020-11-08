@@ -73,7 +73,7 @@ class Kanuu
         }
 
         if ($identifier instanceof Model) {
-            return $this->getKey();
+            return $identifier->getKey();
         }
 
         return (string) $identifier;

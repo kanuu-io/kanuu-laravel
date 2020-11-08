@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Facade;
  * @see \Kanuu\Laravel\Kanuu
  * @method static array getNonce(mixed $identifier)
  * @method static RedirectResponse redirect(mixed $identifier)
+ * @method static string getIdentifier(mixed $identifier)
  */
 class Kanuu extends Facade
 {
