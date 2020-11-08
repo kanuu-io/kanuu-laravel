@@ -17,13 +17,10 @@ class RedirectToKanuuControllerTest extends TestCase
         $this->app->make('router')->get('/kanuu/{identifier}', RedirectToKanuu::class);
 
         // And the following mocked response.
-        $mockedResponse = [
+        $this->mockKanuuHttpCall([
             'nonce' => 'some_nonce',
             'url' => 'https://kanuu.io/manage/some_team/some_nonce',
-        ];
-
-        // Used by the fake Http facade.
-        Http::fake(['*' => Http::response($mockedResponse, 200)]);
+        ]);
 
         // When we access that route with an identifier.
         $response = $this->get('/kanuu/some_identifier');
@@ -31,5 +28,8 @@ class RedirectToKanuuControllerTest extends TestCase
         // Then we have been redirected to the right URL.
         $response->assertStatus(302);
         $response->assertRedirect('https://kanuu.io/manage/some_team/some_nonce');
+
+        // And we got that URL from Kanuu.
+        $this->assertKanuuHttpCallWasSent();
     }
 }
