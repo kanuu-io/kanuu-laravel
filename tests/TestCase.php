@@ -2,8 +2,8 @@
 
 namespace Kanuu\Laravel\Tests;
 
-use Orchestra\Testbench\TestCase as Orchestra;
 use Kanuu\Laravel\KanuuServiceProvider;
+use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
 {
