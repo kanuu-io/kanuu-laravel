@@ -5,7 +5,6 @@ namespace Kanuu\Laravel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Http;
-use Kanuu\Laravel\Exceptions\KanuuApiKeyMissingException;
 
 class Kanuu
 {
