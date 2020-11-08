@@ -3,7 +3,6 @@
 namespace Kanuu\Laravel\Tests;
 
 use Illuminate\Http\Client\Request;
-use Illuminate\Support\Facades\Http;
 use Kanuu\Laravel\Facades\Kanuu;
 
 /**

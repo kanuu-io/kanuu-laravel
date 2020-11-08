@@ -2,7 +2,6 @@
 
 namespace Kanuu\Laravel\Tests;
 
-use Illuminate\Support\Facades\Http;
 use Kanuu\Laravel\RedirectToKanuu;
 
 /**
