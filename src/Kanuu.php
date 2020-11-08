@@ -68,7 +68,7 @@ class Kanuu
      */
     public function getIdentifier($identifier): string
     {
-        if (method_exists($identifier, 'getKanuuIdentifier')) {
+        if (is_object($identifier) && method_exists($identifier, 'getKanuuIdentifier')) {
             return call_user_func([$identifier, 'getKanuuIdentifier']);
         }
 
