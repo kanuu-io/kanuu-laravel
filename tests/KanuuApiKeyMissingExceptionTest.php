@@ -5,6 +5,9 @@ namespace Kanuu\Laravel\Tests;
 use Kanuu\Laravel\Exceptions\KanuuApiKeyMissingException;
 use Kanuu\Laravel\Facades\Kanuu;
 
+/**
+ * @see KanuuApiKeyMissingException
+ */
 class KanuuApiKeyMissingExceptionTest extends TestCase
 {
     /** @test */

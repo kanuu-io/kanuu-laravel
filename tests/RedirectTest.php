@@ -7,6 +7,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Http;
 use Kanuu\Laravel\Facades\Kanuu;
 
+/**
+ * @see \Kanuu\Laravel\Kanuu::redirect
+ */
 class RedirectTest extends TestCase
 {
     /** @test */

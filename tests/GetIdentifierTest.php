@@ -5,6 +5,9 @@ namespace Kanuu\Laravel\Tests;
 use Illuminate\Database\Eloquent\Model;
 use Kanuu\Laravel\Facades\Kanuu;
 
+/**
+ * @see \Kanuu\Laravel\Kanuu::getIdentifier
+ */
 class GetIdentifierTest extends TestCase
 {
     /** @test */

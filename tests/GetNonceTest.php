@@ -6,6 +6,9 @@ use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
 use Kanuu\Laravel\Facades\Kanuu;
 
+/**
+ * @see \Kanuu\Laravel\Kanuu::getNonce
+ */
 class GetNonceTest extends TestCase
 {
     /** @test */
