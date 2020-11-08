@@ -16,6 +16,12 @@ class KanuuServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/kanuu.php', 'kanuu');
+
+        $this->app->singleton(Kanuu::class, function () {
+            return new Kanuu(config('kanuu.api_key'), config('kanuu.base_url'));
+        });
+
+        $this->app->bind('kanuu', Kanuu::class);
     }
 
     protected function publishConfig()
