@@ -3,6 +3,7 @@
 namespace Kanuu\Laravel;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Http;
 
 class Kanuu
@@ -35,6 +36,17 @@ class Kanuu
         $response = Http::withToken($this->apiKey)->post($url, $data);
 
         return $response->json();
+    }
+
+    /**
+     * @param mixed $identifier
+     * @return RedirectResponse
+     */
+    public function redirect($identifier): RedirectResponse
+    {
+        $nonce = $this->getNonce($identifier);
+
+        return redirect($nonce['url']);
     }
 
     /**
