@@ -29,10 +29,12 @@ Route::get('kannu/{identifier}', '\Kanuu\Laravel\RedirectToKanuu')->name('kanuu.
 ##### 3. Now, all you need to do is add a "Manage your subscription" button that uses that route.
 
 ```html
-<a href="{{ route('kanuu.redirect') }}" class="...">
+<a href="{{ route('kanuu.redirect', $user) }}" class="...">
     Manage your subscription
 </a>
 ```
+
+Note that your can use any identifier you want as long as it's unique throughout your application. For example, if you want to provide team-based subscription, you can use `route('kanuu.redirect', $team)` or `route('kanuu.redirect', $team->uuid)`.
 
 And that's it! ✨
 
