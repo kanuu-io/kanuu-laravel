@@ -22,5 +22,7 @@ class TestCase extends Orchestra
             'database' => ':memory:',
             'prefix' => '',
         ]);
+
+        $app['config']->set('kanuu.api_key', 'some_kanuu_api_key');
     }
 }
