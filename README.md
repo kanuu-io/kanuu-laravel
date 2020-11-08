@@ -4,7 +4,7 @@
 [![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/kanuu-io/kanuu-laravel/Tests?label=tests)](https://github.com/kanuu-io/kanuu-laravel/actions?query=workflow%3ATests+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/kanuu-io/kanuu-laravel.svg)](https://packagist.org/packages/kanuu-io/kanuu-laravel)
 
-TODO: Quick description + image
+🛶 Quickly integrate your Laravel application with Kanuu in 3 simples steps.
 
 ## Installation
 
@@ -12,11 +12,29 @@ TODO: Quick description + image
 composer require kanuu-io/kanuu-laravel
 ```
 
-## Usage
+## Getting started
 
-``` php
-TODO
+First, add your Kanuu API key to your `.env` file.
+
+```php
+KANUU_API_KEY="YOUR_API_KEY_HERE"
 ```
+
+Next, add a route that will redirect your user to Kanuu based on a unique identifier.
+
+```php
+Route::get('kannu/{identifier}', '\Kanuu\Laravel\RedirectToKanuu')->name('kanuu.redirect');
+```
+
+Now, all you need to do is add a "Manage your subscription" button that uses that route.
+
+```html
+<a href="{{ route('kanuu.redirect') }}" class="...">
+    Manage your subscription
+</a>
+```
+
+And that's it! ✨
 
 ## License
 
