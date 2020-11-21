@@ -29,7 +29,7 @@ class KanuuServiceProvider extends ServiceProvider
     {
         $this->publishes([
             __DIR__ . '/../config/kanuu.php' => config_path('kanuu.php'),
-        ], 'config');
+        ], 'kanuu-config');
     }
 
     protected function resolveKanuuManager(): Kanuu
