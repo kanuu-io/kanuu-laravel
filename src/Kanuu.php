@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
+use Kanuu\Laravel\Exceptions\KanuuSubscriptionMissingException;
 
 class Kanuu
 {
@@ -42,6 +43,10 @@ class Kanuu
         $url = $this->getUrl('api/nonce');
         $data = ['identifier' => $this->getIdentifier($identifier)];
         $response = Http::withToken($this->apiKey)->post($url, $data);
+
+        if ($response->status() === 402) {
+            throw new KanuuSubscriptionMissingException();
+        }
 
         return $response->json();
     }

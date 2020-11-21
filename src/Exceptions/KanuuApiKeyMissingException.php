@@ -2,9 +2,7 @@
 
 namespace Kanuu\Laravel\Exceptions;
 
-use Exception;
-
-class KanuuApiKeyMissingException extends Exception
+class KanuuApiKeyMissingException extends KanuuException
 {
     protected $message = 'Your Kanuu API key is missing. Please ensure you added it to your .env file.';
 }
