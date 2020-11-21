@@ -2,9 +2,11 @@
 
 namespace Kanuu\Laravel;
 
+use Closure;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 
 class Kanuu
 {
@@ -13,6 +15,12 @@ class Kanuu
 
     /** @var string */
     protected $baseUrl;
+
+    /** @var Closure|null */
+    protected $modelResolver;
+
+    /** @var array */
+    protected $webhookHandlers = [];
 
     /**
      * Kanuu constructor.
@@ -77,5 +85,52 @@ class Kanuu
         }
 
         return (string) $identifier;
+    }
+
+    /**
+     * @param Closure $modelResolver
+     * @return static
+     */
+    public function getModelUsing(Closure $modelResolver): Kanuu
+    {
+        $this->modelResolver = $modelResolver;
+
+        return $this;
+    }
+
+    /**
+     * @param string|null $identifier
+     * @return mixed
+     */
+    public function getModel(?string $identifier)
+    {
+        if (! $this->modelResolver) {
+            return $identifier;
+        }
+
+        return $this->modelResolver($identifier);
+    }
+
+    /**
+     * @param string $event
+     * @param Closure $webhookHandler
+     * @return static
+     */
+    public function on(string $event, Closure $webhookHandler): Kanuu
+    {
+        $this->webhookHandlers[$event] = $webhookHandler;
+
+        return $this;
+    }
+
+    /**
+     * @param string $event
+     * @return array
+     */
+    public function getWebhookHandlersFor(string $event): array
+    {
+        return array_filter($this->webhookHandlers, function ($eventPattern) use ($event) {
+            return Str::is($eventPattern, $event);
+        }, ARRAY_FILTER_USE_KEY);
     }
 }

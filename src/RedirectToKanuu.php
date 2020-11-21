@@ -3,12 +3,11 @@
 namespace Kanuu\Laravel;
 
 use Illuminate\Routing\Controller;
-use Kanuu\Laravel\Facades\Kanuu as KanuuFacade;
 
 class RedirectToKanuu extends Controller
 {
-    public function __invoke($identifier)
+    public function __invoke($identifier, Kanuu $kanuu)
     {
-        return KanuuFacade::redirect($identifier);
+        return $kanuu->redirect($identifier);
     }
 }
