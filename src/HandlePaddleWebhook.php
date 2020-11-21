@@ -15,20 +15,23 @@ class HandlePaddleWebhook extends Controller
 
     public function __invoke(Request $request, Kanuu $kanuu)
     {
-        $event = $this->getEvent($request);
-        $identifier = $this->getIdentifier($request);
-        $model = $kanuu->getModel($identifier);
+        $webhookHandlers = $kanuu->getWebhookHandlersFor(
+            $request->get('alert_name')
+        );
 
-        foreach ($kanuu->getWebhookHandlersFor($event) as $webhookHandler) {
-            $webhookHandler($model, (object) $request->all());
+        if (empty($webhookHandlers)) {
+            return response()->json();
+        }
+
+        $identifier = $request->has('passthrough')
+            ? $kanuu->getModel($this->getIdentifier($request))
+            : null;
+
+        foreach ($webhookHandlers as $webhookHandler) {
+            $webhookHandler((object) $request->all(), $identifier);
         }
 
         return response()->json();
-    }
-
-    protected function getEvent(Request $request)
-    {
-        return $request->get('alert_name');
     }
 
     protected function getIdentifier(Request $request): ?string
