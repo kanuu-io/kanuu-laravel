@@ -37,6 +37,7 @@ class Kanuu
     /**
      * @param mixed $identifier
      * @return array
+     * @throws KanuuSubscriptionMissingException
      */
     public function getNonce($identifier): array
     {
@@ -54,6 +55,7 @@ class Kanuu
     /**
      * @param mixed $identifier
      * @return RedirectResponse
+     * @throws KanuuSubscriptionMissingException
      */
     public function redirect($identifier): RedirectResponse
     {
