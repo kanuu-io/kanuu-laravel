@@ -104,11 +104,11 @@ class Kanuu
      */
     public function getModel(?string $identifier)
     {
-        if (! $this->modelResolver) {
+        if (! $resolver = $this->modelResolver) {
             return $identifier;
         }
 
-        return $this->modelResolver($identifier);
+        return $resolver($identifier);
     }
 
     /**
