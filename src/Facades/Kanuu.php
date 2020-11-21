@@ -2,6 +2,7 @@
 
 namespace Kanuu\Laravel\Facades;
 
+use Closure;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Facade;
 
@@ -10,6 +11,8 @@ use Illuminate\Support\Facades\Facade;
  * @method static array getNonce(mixed $identifier)
  * @method static RedirectResponse redirect(mixed $identifier)
  * @method static string getIdentifier(mixed $identifier)
+ * @method static \Kanuu\Laravel\Kanuu getModelUsing(Closure $modelResolver)
+ * @method static \Kanuu\Laravel\Kanuu on(string $event, Closure $webhookHandler)
  */
 class Kanuu extends Facade
 {
