@@ -11,13 +11,20 @@ class KanuuServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishConfig();
+
+            $this->publishes([
+                __DIR__.'/../database/migrations' => database_path('migrations'),
+            ], 'kanuu-migrations');
+
+            $this->publishes([
+                __DIR__.'/../stubs/KanuuServiceProvider.stub' => app_path('Providers/KanuuServiceProvider.php'),
+            ], 'kanuu-provider');
         }
     }
 
     public function register()
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/kanuu.php', 'kanuu');
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
         $this->app->singleton(Kanuu::class, function () {
             return $this->resolveKanuuManager();
