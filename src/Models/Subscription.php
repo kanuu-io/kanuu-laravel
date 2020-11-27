@@ -27,7 +27,7 @@ class Subscription extends Model
      */
     public function user(): BelongsTo
     {
-        return $this->belongsTo(get_class(config('kanuu.user_model')));
+        return $this->belongsTo(config('kanuu.user_model'));
     }
 
     /**
