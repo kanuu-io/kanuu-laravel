@@ -19,6 +19,8 @@ class KanuuServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__.'/../stubs/KanuuServiceProvider.stub' => app_path('Providers/KanuuServiceProvider.php'),
             ], 'kanuu-provider');
+
+            $this->loadRoutesFrom(__DIR__.'/routes.php');
         }
     }
 
