@@ -19,7 +19,7 @@ class Subscription extends Model
      * @var array
      */
     protected $dates = [
-        'cancelled_at'
+        'cancelled_at',
     ];
 
     /**

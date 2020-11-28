@@ -2,8 +2,8 @@
 
 namespace Kanuu\Laravel\Traits;
 
-use Kanuu\Laravel\Models\Subscription;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Kanuu\Laravel\Models\Subscription;
 
 trait HasSubscriptions
 {
