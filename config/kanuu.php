@@ -9,4 +9,6 @@ return [
             'public_key' => env('PADDLE_PUBLIC_KEY'),
         ],
     ],
+
+    'user_model' => \App\Models\User::class,
 ];
