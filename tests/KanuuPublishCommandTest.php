@@ -29,6 +29,7 @@ class KanuuPublishCommandTest extends TestCase
         $this->files->put(static::$tmpDir . '/routes/web.php', $this->getRoutesFileContent());
         $this->files->makeDirectory(static::$tmpDir . '/app/Http/Middleware', 0755, true, true);
         $this->files->put(static::$tmpDir . '/app/Http/Middleware/VerifyCsrfToken.php', $this->getVerifyCsrfTokenContent());
+        $this->files->makeDirectory(static::$tmpDir . '/app/Models', 0755, true, true);
         $this->app->setBasePath(static::$tmpDir);
     }
 
@@ -47,10 +48,6 @@ class KanuuPublishCommandTest extends TestCase
             ->expectsConfirmation('You have no User model, should we create one for you?', 'yes')
             ->expectsOutput('Done! Happy billing! 💸')
             ->run();
-
-        dd($this->files->glob(
-            $this->app->basePath('**/**/*')
-        ));
 
         // Then we created the Subscription's model, factory and migration.
         $migrations = $this->getMigrations();
