@@ -231,4 +231,13 @@ class KanuuPublishCommand extends GeneratorCommand
     {
         return ''; // Ignored.
     }
+
+    protected function qualifyModel(string $model)
+    {
+        if (is_callable('parent::qualifyModel')) {
+            return parent::qualifyModel($model);
+        }
+
+        return $this->qualifyClass($model);
+    }
 }
