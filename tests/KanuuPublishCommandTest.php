@@ -48,6 +48,10 @@ class KanuuPublishCommandTest extends TestCase
             ->expectsOutput('Done! Happy billing! 💸')
             ->run();
 
+        dd($this->files->glob(
+            $this->app->basePath('database/migrations/*.php')
+        ));
+
         // Then we created the Subscription's model, factory and migration.
         $migrations = $this->getMigrations();
         $this->assertBasePathFileExists('app/Models/Subscription.php');
