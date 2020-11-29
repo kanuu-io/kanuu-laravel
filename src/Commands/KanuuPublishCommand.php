@@ -28,7 +28,7 @@ class KanuuPublishCommand extends GeneratorCommand
         $this->addKanuuRoutes();
         $this->addExceptionToVerifyCsrfToken();
 
-        $this->comment('Done! Happy billing! 💸');
+        $this->info('Done! Happy billing! 💸');
     }
 
     protected function createModelIfMissing(string $model)
@@ -157,7 +157,7 @@ class KanuuPublishCommand extends GeneratorCommand
                 $content
             );
             $content = preg_replace(
-                '/(use Illuminate\\\\Database\\\\Eloquent\\\\Model;)/',
+                '/(use [^;]+;)/',
                 sprintf("$1\nuse %s;", $trait),
                 $content
             );
