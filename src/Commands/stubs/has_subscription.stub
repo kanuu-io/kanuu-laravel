@@ -3,7 +3,7 @@
 namespace {{namespace}};
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use {{modelsNamespace}}\Subscription;
+use {{modelsNamespace}}Subscription;
 
 trait {{class}}
 {

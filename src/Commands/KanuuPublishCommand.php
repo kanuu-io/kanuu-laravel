@@ -18,12 +18,7 @@ class KanuuPublishCommand extends GeneratorCommand
             $this->createModel('Subscription', 'subscription_model_l8');
         }
 
-        $this->callSilent('make:factory', [
-            'name' => 'SubscriptionFactory',
-            '--model' => $this->qualifyClass('Subscription'),
-        ]);
-        $this->comment('Subscription factory create successfully.');
-
+        $this->createFactory('Subscription');
         $this->createMigration('create_subscriptions_table', 'subscription_migration');
         $this->createClass('Providers/KanuuServiceProvider', 'kanuu_service_provider', 'KanuuServiceProvider');
         $this->createClass('Concerns/HasSubscriptions', 'has_subscription', 'HasSubscriptions trait');
@@ -72,7 +67,7 @@ class KanuuPublishCommand extends GeneratorCommand
         }
 
         foreach ($this->getExtraReplacements() as $from => $to) {
-            $stub = str_replace($from, $to, $stub);
+            $stub = str_replace('{{' . $from . '}}', $to, $stub);
         }
 
         return $this->sortImports($stub);
@@ -99,6 +94,22 @@ class KanuuPublishCommand extends GeneratorCommand
         return [
             'modelsNamespace' => $this->qualifyModel('')
         ];
+    }
+
+    protected function createFactory(string $model): bool
+    {
+        $success = ! $this->callSilent('make:factory', [
+            'name' => $model . 'Factory',
+            '--model' => $this->qualifyModel($model),
+        ]);
+
+        if ($success) {
+            $this->comment($model . ' factory created successfully.');
+        } else {
+            $this->error($model . ' factory already exists!');
+        }
+
+        return $success;
     }
 
     protected function isForced()
