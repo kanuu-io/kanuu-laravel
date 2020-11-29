@@ -3,6 +3,7 @@
 namespace Kanuu\Laravel;
 
 use Illuminate\Support\ServiceProvider;
+use Kanuu\Laravel\Commands\KanuuPublishCommand;
 use Kanuu\Laravel\Exceptions\KanuuApiKeyMissingException;
 
 class KanuuServiceProvider extends ServiceProvider
@@ -11,6 +12,9 @@ class KanuuServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishConfig();
+            $this->commands([
+                KanuuPublishCommand::class,
+            ]);
         }
     }
 
