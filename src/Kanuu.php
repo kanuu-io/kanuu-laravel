@@ -5,7 +5,9 @@ namespace Kanuu\Laravel;
 use Closure;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Route as RouteFacade;
 use Illuminate\Support\Str;
 use Kanuu\Laravel\Exceptions\KanuuSubscriptionMissingException;
 
@@ -139,5 +141,23 @@ class Kanuu
         return array_filter($this->webhookHandlers, function ($eventPattern) use ($event) {
             return Str::is($eventPattern, $event);
         }, ARRAY_FILTER_USE_KEY);
+    }
+
+    /**
+     * @param string $url
+     * @return Route
+     */
+    public function redirectRoute(string $url = 'kanuu/{identifier}'): Route
+    {
+        return RouteFacade::get($url, RedirectToKanuu::class);
+    }
+
+    /**
+     * @param string $url
+     * @return Route
+     */
+    public function webhookRoute(string $url = 'webhooks/paddle'): Route
+    {
+        return RouteFacade::post($url, HandlePaddleWebhook::class);
     }
 }

@@ -1,11 +1,11 @@
 <?php
 
-namespace Kanuu\Laravel\Traits;
+namespace {{namespace}};
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Kanuu\Laravel\Models\Subscription;
+use {{modelsNamespace}}Subscription;
 
-trait HasSubscriptions
+trait {{class}}
 {
     /**
      * @return HasMany

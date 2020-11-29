@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Providers;
+namespace {{namespace}};
 
-use App\Models\User;
+use {{billableEntityFullClass}};
 use Illuminate\Support\ServiceProvider;
 use Kanuu\Laravel\Facades\Kanuu;
 
@@ -16,10 +16,10 @@ class KanuuServiceProvider extends ServiceProvider
     public function boot()
     {
         Kanuu::getModelUsing(function ($identifier) {
-            return User::findOrFail($identifier);
+            return {{billableEntityClass}}::findOrFail($identifier);
         });
 
-        Kanuu::on('subscription_*', function ($payload, User $user) {
+        Kanuu::on('subscription_*', function ($payload, {{billableEntityClass}} ${{billableEntity}}) {
             $data = [
                 'paddle_user_id' => $payload->user_id,
                 'paddle_plan_id' => $payload->subscription_plan_id,
@@ -31,7 +31,7 @@ class KanuuServiceProvider extends ServiceProvider
                 $data['cancelled_at'] = $payload->cancellation_effective_date;
             }
 
-            $user->subscriptions()->updateOrCreate(
+            ${{billableEntity}}->subscriptions()->updateOrCreate(
                 ['paddle_subscription_id' => $payload->subscription_id], $data
             );
         });

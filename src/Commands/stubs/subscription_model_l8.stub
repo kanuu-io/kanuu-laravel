@@ -1,12 +1,12 @@
 <?php
 
-namespace Kanuu\Laravel\Models;
+namespace {{namespace}};
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Subscription extends Model
+class {{class}} extends Model
 {
     use HasFactory;
 
@@ -25,9 +25,9 @@ class Subscription extends Model
     /**
      * @return BelongsTo
      */
-    public function user(): BelongsTo
+    public function {{billableEntity}}(): BelongsTo
     {
-        return $this->belongsTo(config('kanuu.user_model'));
+        return $this->belongsTo({{billableEntityClass}}::class);
     }
 
     /**
