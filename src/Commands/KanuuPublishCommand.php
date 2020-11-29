@@ -157,8 +157,8 @@ class KanuuPublishCommand extends GeneratorCommand
                 $content
             );
             $content = preg_replace(
-                '/(use [^;]+;)/',
-                sprintf("$1\nuse %s;", $trait),
+                "/(\n\nclass[^{]*{)/",
+                sprintf("\nuse %s;$1", $trait),
                 $content
             );
 
