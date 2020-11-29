@@ -41,7 +41,7 @@ class KanuuPublishCommand extends GeneratorCommand
         $this->callSilent('make:model', [
             'name' => $model,
             '--migration' => true,
-            '--factory' => true
+            '--factory' => true,
         ]);
     }
 
