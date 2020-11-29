@@ -10,7 +10,7 @@ use Kanuu\Laravel\Commands\KanuuPublishCommand;
 /**
  * @see KanuuPublishCommand
  */
-class KanuuPublishCommandTest extends TestCase
+class KanuuPublishCommandTest
 {
     /** @var string */
     protected static $tmpDir = __DIR__ . '/tmp';
