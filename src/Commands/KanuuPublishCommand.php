@@ -26,6 +26,8 @@ class KanuuPublishCommand extends GeneratorCommand
         $this->registerProvider('KanuuServiceProvider');
         $this->addTraitToModel($this->isTeam() ? 'Team' : 'User', $this->qualifyClass('Concerns/HasSubscriptions'));
         $this->addKanuuRoutes();
+
+        $this->comment('Done! Happy billing! 💸');
     }
 
     protected function createModelIfMissing(string $model)
@@ -34,7 +36,7 @@ class KanuuPublishCommand extends GeneratorCommand
             return;
         }
 
-        if ($this->confirm("You have no $model model, should we create one for you?", true)) {
+        if (! $this->confirm("You have no $model model, should we create one for you?", true)) {
             return;
         }
 
@@ -172,8 +174,9 @@ class KanuuPublishCommand extends GeneratorCommand
                 $content
             );
 
-            $content .= "Kanuu::redirectRoute()->name('kanuu.redirect');";
-            $content .= "Kanuu::webhookRoute()->name('webhooks.paddle');";
+            $content = trim($content) . "\n\n";
+            $content .= "Kanuu::redirectRoute()->name('kanuu.redirect');\n";
+            $content .= "Kanuu::webhookRoute()->name('webhooks.paddle');\n";
 
             return $this->sortImports($content);
         });
