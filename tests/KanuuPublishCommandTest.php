@@ -27,6 +27,7 @@ class KanuuPublishCommandTest extends TestCase
         $this->files->deleteDirectory(static::$tmpDir);
         $this->files->copyDirectory($this->app->basePath(), static::$tmpDir);
         $this->app->setBasePath(static::$tmpDir);
+        Artisan::call('make:model', ['name' => 'User']);
     }
 
     protected function tearDown(): void

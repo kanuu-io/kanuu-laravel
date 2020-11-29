@@ -15,7 +15,7 @@ class CreateSubscriptionsTable extends Migration
     {
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('{{billableEntityId}}')->nullable()->constrained('{{billableEntityTable}}')->nullOnDelete();
 
             $table->string('paddle_user_id');
             $table->string('paddle_subscription_id');

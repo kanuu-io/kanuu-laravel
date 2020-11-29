@@ -2,6 +2,7 @@
 
 namespace Kanuu\Laravel\Commands;
 
+use Closure;
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
 
@@ -12,16 +13,36 @@ class KanuuPublishCommand extends GeneratorCommand
 
     public function handle()
     {
-        if ($this->isLaravel7()) {
-            $this->createModel('Subscription', 'subscription_model_l7');
-        } else {
-            $this->createModel('Subscription', 'subscription_model_l8');
-        }
+        $subsctiptionModelStub = $this->isLaravel7()
+            ? 'subscription_model_l7'
+            : 'subscription_model_l8';
 
+        $this->createModelIfMissing($this->isTeam() ? 'Team' : 'User');
+        $this->createModel('Subscription', $subsctiptionModelStub);
         $this->createFactory('Subscription');
         $this->createMigration('create_subscriptions_table', 'subscription_migration');
         $this->createClass('Providers/KanuuServiceProvider', 'kanuu_service_provider', 'KanuuServiceProvider');
         $this->createClass('Concerns/HasSubscriptions', 'has_subscription', 'HasSubscriptions trait');
+        $this->registerProvider('KanuuServiceProvider');
+        $this->addTraitToModel($this->isTeam() ? 'Team' : 'User', $this->qualifyClass('Concerns/HasSubscriptions'));
+        $this->addKanuuRoutes();
+    }
+
+    protected function createModelIfMissing(string $model)
+    {
+        if ($this->files->exists($this->getPath($this->qualifyModel($model)))) {
+            return;
+        }
+
+        if ($this->confirm("You have no $model model, should we create one for you?", true)) {
+            return;
+        }
+
+        $this->callSilent('make:model', [
+            'name' => $model,
+            '--migration' => true,
+            '--factory' => true
+        ]);
     }
 
     protected function createModel($rawName, $stubName): bool
@@ -84,8 +105,6 @@ class KanuuPublishCommand extends GeneratorCommand
         $this->makeDirectory($path);
         $this->files->put($path, $stub);
 
-        $this->info($entity . ' created successfully.');
-
         return true;
     }
 
@@ -93,6 +112,11 @@ class KanuuPublishCommand extends GeneratorCommand
     {
         return [
             'modelsNamespace' => $this->qualifyModel(''),
+            'billableEntity' => $this->isTeam() ? 'team' : 'user',
+            'billableEntityClass' => $this->isTeam() ? 'Team' : 'User',
+            'billableEntityTable' => $this->isTeam() ? 'teams' : 'users',
+            'billableEntityId' => $this->isTeam() ? 'team_id' : 'user_id',
+            'billableEntityFullClass' => $this->qualifyModel($this->isTeam() ? 'Team' : 'User'),
         ];
     }
 
@@ -103,18 +127,84 @@ class KanuuPublishCommand extends GeneratorCommand
             '--model' => $this->qualifyModel($model),
         ]);
 
-        if ($success) {
-            $this->comment($model . ' factory created successfully.');
-        } else {
+        if (! $success) {
             $this->error($model . ' factory already exists!');
         }
 
         return $success;
     }
 
+    protected function registerProvider(string $provider)
+    {
+        $this->updateBaseFile('config/app.php', function ($content) use ($provider) {
+            return preg_replace(
+                '/(\/\*[\s*]*Package Service Providers...[\s*]*\*\/)/',
+                sprintf("$1\n        %s::class,", $this->qualifyClass('Providers/' . $provider)),
+                $content
+            );
+        });
+    }
+
+    protected function addTraitToModel(string $model, string $trait)
+    {
+        $this->updateFile($this->getPath($this->qualifyModel($model)), function ($content) use ($trait) {
+            $content = preg_replace(
+                '/(class[^{]*{)/',
+                sprintf("$1\n    use %s;", class_basename($trait)),
+                $content
+            );
+            $content = preg_replace(
+                '/(use Illuminate\\\\Database\\\\Eloquent\\\\Model;)/',
+                sprintf("$1\nuse %s;", $trait),
+                $content
+            );
+
+            return $this->sortImports($content);
+        });
+    }
+
+    protected function addKanuuRoutes()
+    {
+        $this->updateBaseFile('routes/web.php', function ($content) {
+            $content = preg_replace(
+                '/(use Illuminate\\\\Support\\\\Facades\\\\Route;)/',
+                "$1\nuse Kanuu\Laravel\Facades\Kanuu;",
+                $content
+            );
+
+            $content .= "Kanuu::redirectRoute()->name('kanuu.redirect');";
+            $content .= "Kanuu::webhookRoute()->name('webhooks.paddle');";
+
+            return $this->sortImports($content);
+        });
+    }
+
+    protected function updateBaseFile(string $path, Closure $callback)
+    {
+        $path = $this->laravel->basePath($path);
+
+        return $this->updateFile($path, $callback);
+    }
+
+    protected function updateFile(string $path, Closure $callback)
+    {
+        if (! $this->files->exists($path)) {
+            return;
+        }
+
+        $content = $this->files->get($path);
+        $content = $callback($content);
+        $this->files->replace($path, $content);
+    }
+
     protected function isForced()
     {
         return $this->hasOption('force') && $this->option('force');
+    }
+
+    protected function isTeam()
+    {
+        return $this->hasOption('team') && $this->option('team');
     }
 
     protected function isLaravel7()
