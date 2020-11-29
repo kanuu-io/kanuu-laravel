@@ -234,10 +234,18 @@ class KanuuPublishCommand extends GeneratorCommand
 
     protected function qualifyModel(string $model)
     {
-        if (is_callable('parent::qualifyModel')) {
-            return parent::qualifyModel($model);
+        $model = ltrim($model, '\\/');
+
+        $model = str_replace('/', '\\', $model);
+
+        $rootNamespace = $this->rootNamespace();
+
+        if (Str::startsWith($model, $rootNamespace)) {
+            return $model;
         }
 
-        return $this->qualifyClass($model);
+        return is_dir(app_path('Models'))
+            ? $rootNamespace.'Models\\'.$model
+            : $rootNamespace.$model;
     }
 }
