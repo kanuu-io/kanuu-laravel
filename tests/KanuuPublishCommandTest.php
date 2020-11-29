@@ -4,7 +4,6 @@ namespace Kanuu\Laravel\Tests;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 use Kanuu\Laravel\Commands\KanuuPublishCommand;
 
