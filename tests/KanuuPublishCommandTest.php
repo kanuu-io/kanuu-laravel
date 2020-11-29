@@ -2,7 +2,6 @@
 
 namespace Kanuu\Laravel\Tests;
 
-use Carbon\Carbon;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Artisan;
@@ -17,7 +16,7 @@ class KanuuPublishCommandTest extends TestCase
     /** @var string */
     protected static $tmpDir = __DIR__ . '/tmp';
 
-    /** @var Filesystem  */
+    /** @var Filesystem */
     protected $files;
 
     protected function setUp(): void
