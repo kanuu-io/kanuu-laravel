@@ -13,6 +13,8 @@ class KanuuPublishCommandTest extends TestCase
     /** @test */
     public function dummy()
     {
+        Artisan::call('kanuu:publish');
+        dd(Artisan::output());
         $this->artisan('kanuu:publish')
             ->expectsOutput('')
             ->run();
