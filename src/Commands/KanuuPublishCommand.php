@@ -98,7 +98,7 @@ class KanuuPublishCommand extends GeneratorCommand
     protected function getExtraReplacements(): array
     {
         return [
-            'modelsNamespace' => $this->qualifyModel('')
+            'modelsNamespace' => $this->qualifyModel(''),
         ];
     }
 
