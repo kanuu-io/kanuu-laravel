@@ -3,6 +3,7 @@
 namespace Kanuu\Laravel\Commands;
 
 use Illuminate\Console\GeneratorCommand;
+use Illuminate\Support\Str;
 
 class KanuuPublishCommand extends GeneratorCommand
 {
@@ -11,7 +12,12 @@ class KanuuPublishCommand extends GeneratorCommand
 
     public function handle()
     {
-        $this->createModel('Subscription', 'subscription_model_l8');
+        if ($this->isLaravel7()) {
+            $this->createModel('Subscription', 'subscription_model_l7');
+        } else {
+            $this->createModel('Subscription', 'subscription_model_l8');
+        }
+
         $this->callSilent('make:factory', [
             'name' => 'SubscriptionFactory',
             '--model' => $this->qualifyClass('Subscription'),
@@ -19,8 +25,6 @@ class KanuuPublishCommand extends GeneratorCommand
         $this->comment('Subscription factory create successfully.');
 
         $this->createMigration('create_subscriptions_table', 'subscription_migration');
-
-
         $this->createClass('Providers/KanuuServiceProvider', 'kanuu_service_provider', 'KanuuServiceProvider');
         $this->createClass('Concerns/HasSubscriptions', 'has_subscription', 'HasSubscriptions trait');
     }
@@ -90,16 +94,21 @@ class KanuuPublishCommand extends GeneratorCommand
         return true;
     }
 
-    protected function isForced()
-    {
-        return $this->hasOption('force') && $this->option('force');
-    }
-
     protected function getExtraReplacements(): array
     {
         return [
             'modelsNamespace' => $this->qualifyModel('')
         ];
+    }
+
+    protected function isForced()
+    {
+        return $this->hasOption('force') && $this->option('force');
+    }
+
+    protected function isLaravel7()
+    {
+        return Str::before($this->laravel->version(), '.') === '7';
     }
 
     protected function getStub()
