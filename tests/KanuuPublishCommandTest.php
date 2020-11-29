@@ -49,7 +49,7 @@ class KanuuPublishCommandTest extends TestCase
             ->run();
 
         dd($this->files->glob(
-            $this->app->basePath()
+            $this->app->basePath('**/**/*')
         ));
 
         // Then we created the Subscription's model, factory and migration.
