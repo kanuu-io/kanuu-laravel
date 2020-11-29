@@ -26,6 +26,7 @@ class KanuuPublishCommand extends GeneratorCommand
         $this->registerProvider('KanuuServiceProvider');
         $this->addTraitToModel($this->isTeam() ? 'Team' : 'User', $this->qualifyClass('Concerns/HasSubscriptions'));
         $this->addKanuuRoutes();
+        $this->addExceptionToVerifyCsrfToken();
 
         $this->comment('Done! Happy billing! 💸');
     }
@@ -179,6 +180,17 @@ class KanuuPublishCommand extends GeneratorCommand
             $content .= "Kanuu::webhookRoute()->name('webhooks.paddle');\n";
 
             return $this->sortImports($content);
+        });
+    }
+
+    protected function addExceptionToVerifyCsrfToken()
+    {
+        $this->updateBaseFile('app/Http/Middleware/VerifyCsrfToken.php', function ($content) {
+            return preg_replace(
+                '/(protected\s+\$except\s+=\s+\[\s+)\/\/(\s+];)/',
+                "$1'webhooks/*',$2",
+                $content
+            );
         });
     }
 

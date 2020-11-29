@@ -28,6 +28,7 @@ class KanuuPublishCommandTest extends TestCase
         $this->files->copyDirectory($this->app->basePath(), static::$tmpDir);
         $this->files->makeDirectory(static::$tmpDir . '/routes');
         $this->files->put(static::$tmpDir . '/routes/web.php', $this->getRoutesFileContent());
+        $this->files->put(static::$tmpDir . '/app/Http/Middleware/VerifyCsrfToken.php', $this->getVerifyCsrfTokenContent());
         $this->app->setBasePath(static::$tmpDir);
     }
 
@@ -85,6 +86,9 @@ class KanuuPublishCommandTest extends TestCase
         $this->assertBaseFileContains('use Kanuu\Laravel\Facades\Kanuu;', 'routes/web.php');
         $this->assertBaseFileContains('Kanuu::redirectRoute()->name(\'kanuu.redirect\');', 'routes/web.php');
         $this->assertBaseFileContains('Kanuu::webhookRoute()->name(\'webhooks.paddle\');', 'routes/web.php');
+
+        // And the "webhooks/*" pattern was added to the VerifyCsrfToken exceptions.
+        $this->assertBaseFileContains("'webhooks/*',", 'app/Http/Middleware/VerifyCsrfToken.php');
     }
 
     /** @test */
@@ -129,6 +133,9 @@ class KanuuPublishCommandTest extends TestCase
         $this->assertBaseFileContains('use App\Models\Team;', 'app/Providers/KanuuServiceProvider.php');
         $this->assertBaseFileContains('Team::findOrFail($identifier);', 'app/Providers/KanuuServiceProvider.php');
         $this->assertBaseFileContains('$team->subscriptions()->updateOrCreate', 'app/Providers/KanuuServiceProvider.php');
+
+        // And the "webhooks/*" pattern was added to the VerifyCsrfToken exceptions.
+        $this->assertBaseFileContains("'webhooks/*',", 'app/Http/Middleware/VerifyCsrfToken.php');
     }
 
     protected function assertBasePathFileExists($filename)
@@ -169,6 +176,24 @@ class KanuuPublishCommandTest extends TestCase
         Route::get('/', function () {
             return view('welcome');
         });
+        EOL;
+    }
+
+    protected function getVerifyCsrfTokenContent()
+    {
+        return <<<EOL
+        <?php
+
+        namespace App\Http\Middleware;
+
+        use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as Middleware;
+
+        class VerifyCsrfToken extends Middleware
+        {
+            protected \$except = [
+                //
+            ];
+        }
         EOL;
     }
 }
