@@ -27,6 +27,7 @@ class KanuuPublishCommandTest extends TestCase
         $this->files->copyDirectory($this->app->basePath(), static::$tmpDir);
         $this->files->makeDirectory(static::$tmpDir . '/routes');
         $this->files->put(static::$tmpDir . '/routes/web.php', $this->getRoutesFileContent());
+        $this->files->makeDirectory(static::$tmpDir . '/app/Http/Middleware', 0755, true, true);
         $this->files->put(static::$tmpDir . '/app/Http/Middleware/VerifyCsrfToken.php', $this->getVerifyCsrfTokenContent());
         $this->app->setBasePath(static::$tmpDir);
     }
