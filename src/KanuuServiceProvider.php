@@ -11,16 +11,6 @@ class KanuuServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishConfig();
-
-            $this->publishes([
-                __DIR__.'/../database/migrations' => database_path('migrations'),
-            ], 'kanuu-migrations');
-
-            $this->publishes([
-                __DIR__.'/../stubs/KanuuServiceProvider.stub' => app_path('Providers/KanuuServiceProvider.php'),
-            ], 'kanuu-provider');
-
-            $this->loadRoutesFrom(__DIR__.'/routes.php');
         }
     }
 
@@ -37,10 +27,6 @@ class KanuuServiceProvider extends ServiceProvider
 
     protected function publishConfig()
     {
-        $this->publishes([
-            __DIR__.'/../stubs/KanuuServiceProvider.stub' => app_path('Providers/KanuuServiceProvider.php'),
-        ], 'kanuu-provider');
-
         $this->publishes([
             __DIR__ . '/../config/kanuu.php' => config_path('kanuu.php'),
         ], ['config', 'kanuu-config']);
