@@ -25,6 +25,7 @@ class KanuuPublishCommandTest extends TestCase
         parent::setUp();
 
         $this->files = new Filesystem;
+        $this->files->deleteDirectory(static::$tmpDir);
         $this->files->copyDirectory($this->app->basePath(), static::$tmpDir);
         $this->app->setBasePath(static::$tmpDir);
     }
@@ -39,11 +40,14 @@ class KanuuPublishCommandTest extends TestCase
     /** @test */
     public function dummy()
     {
-        $this->artisan('kanuu:publish');
+        Artisan::call('kanuu:publish');
+        // $this->artisan('kanuu:publish');
 
         $this->assertBasePathFileExists('app/models/Subscription.php');
         $this->assertBasePathFileExists('database/factories/SubscriptionFactory.php');
         $this->assertContainsEquals('create_subscriptions_table', $this->getMigrations());
+
+        dd(Artisan::output());
     }
 
     protected function assertBasePathFileExists($filename)
