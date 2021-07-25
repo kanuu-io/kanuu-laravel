@@ -18,8 +18,8 @@ class {{class}} extends Model
     /**
      * @var array
      */
-    protected $dates = [
-        'cancelled_at',
+    protected $casts = [
+        'cancelled_at' => 'datetime',
     ];
 
     /**
