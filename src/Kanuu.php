@@ -2,11 +2,13 @@
 
 namespace Kanuu\Laravel;
 
-use Carbon\CarbonInterface;
 use Closure;
+use DateInterval;
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route as RouteFacade;
 use Illuminate\Support\Str;
@@ -26,7 +28,7 @@ class Kanuu
     /** @var array */
     protected $webhookHandlers = [];
 
-    /** @var CarbonInterface|int */
+    /** @var DateTimeInterface|DateInterval|int */
     protected $cacheFor = 3600;
 
     /**
@@ -38,6 +40,18 @@ class Kanuu
     {
         $this->apiKey = $apiKey;
         $this->baseUrl = $baseUrl;
+    }
+
+    /**
+     * @param mixed $identifier
+     * @return RedirectResponse
+     * @throws KanuuSubscriptionMissingException
+     */
+    public function redirect($identifier): RedirectResponse
+    {
+        $nonce = $this->getNonce($identifier);
+
+        return redirect($nonce['url']);
     }
 
     /**
@@ -81,14 +95,13 @@ class Kanuu
 
     /**
      * @param mixed $identifier
-     * @return RedirectResponse
-     * @throws KanuuSubscriptionMissingException
+     * @return Subscription
      */
-    public function redirect($identifier): RedirectResponse
+    public function getCachedSubscription($identifier): Subscription
     {
-        $nonce = $this->getNonce($identifier);
-
-        return redirect($nonce['url']);
+        Cache::remember("kanuu.$identifier", $this->cacheFor, function () use ($identifier) {
+            return $this->getSubscription($identifier);
+        });
     }
 
     /**
@@ -119,6 +132,17 @@ class Kanuu
         }
 
         return (string) $identifier;
+    }
+
+    /**
+     * @param DateTimeInterface|DateInterval|int $cacheFor
+     * @return $this
+     */
+    public function cacheFor($cacheFor): Kanuu
+    {
+        $this->cacheFor = $cacheFor;
+
+        return $this;
     }
 
     /**
