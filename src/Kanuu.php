@@ -2,6 +2,7 @@
 
 namespace Kanuu\Laravel;
 
+use Carbon\CarbonInterface;
 use Closure;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
@@ -25,6 +26,9 @@ class Kanuu
     /** @var array */
     protected $webhookHandlers = [];
 
+    /** @var CarbonInterface|int */
+    protected $cacheFor = 3600;
+
     /**
      * Kanuu constructor.
      * @param string $apiKey
@@ -38,12 +42,33 @@ class Kanuu
 
     /**
      * @param mixed $identifier
+     * @param array|null $supplemental
      * @return array
      * @throws KanuuSubscriptionMissingException
      */
-    public function getNonce($identifier): array
+    public function getNonce($identifier, ?array $supplemental = null): array
     {
         $url = $this->getUrl('api/nonce');
+        $response = Http::withToken($this->apiKey)->post($url, [
+            'identifier' => $this->getIdentifier($identifier),
+            'supplemental' => $supplemental,
+        ]);
+
+        if ($response->status() === 402) {
+            throw new KanuuSubscriptionMissingException();
+        }
+
+        return $response->json();
+    }
+
+    /**
+     * @param mixed $identifier
+     * @return Subscription
+     * @throws KanuuSubscriptionMissingException
+     */
+    public function getSubscription($identifier): Subscription
+    {
+        $url = $this->getUrl('api/subscription');
         $data = ['identifier' => $this->getIdentifier($identifier)];
         $response = Http::withToken($this->apiKey)->post($url, $data);
 
@@ -51,7 +76,7 @@ class Kanuu
             throw new KanuuSubscriptionMissingException();
         }
 
-        return $response->json();
+        return Subscription::fromKanuu($response->json());
     }
 
     /**
