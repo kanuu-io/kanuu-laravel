@@ -75,14 +75,11 @@ class Subscription
         return $this->status === 'past-due';
     }
 
-    public function isNoLongerActive(): bool
-    {
-        return $this->isCancelled() || $this->isPaused() || $this->isPastDue();
-    }
-
     public function onGracePeriod(): bool
     {
-        return $this->isNoLongerActive() && $this->isSubscribed();
+        $isNoLongerActive = $this->isCancelled() || $this->isPaused() || $this->isPastDue();
+
+        return $isNoLongerActive && $this->isSubscribed();
     }
 
     public function getStatus(): string
