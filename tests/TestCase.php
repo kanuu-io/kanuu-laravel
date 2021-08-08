@@ -33,11 +33,16 @@ class TestCase extends Orchestra
         Http::fake(['kanuu.io/*' => Http::response($mockedData, 200)]);
     }
 
-    protected function assertKanuuHttpCallWasSent()
+    protected function assertNonceCallWasSent()
     {
-        Http::assertSent(function (Request $request) {
-            return $request->url() === 'https://kanuu.io/api/nonce'
-                && $request->method() === 'POST';
+        $this->assertHttpCallWasSent('POST', 'https://kanuu.io/api/nonce');
+    }
+
+    protected function assertHttpCallWasSent(string $method, string $url)
+    {
+        Http::assertSent(function (Request $request) use ($method, $url) {
+            return $request->url() === $url
+                && $request->method() === $method;
         });
     }
 }

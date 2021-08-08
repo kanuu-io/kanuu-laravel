@@ -27,6 +27,6 @@ class RedirectTest extends TestCase
         $this->assertTrue($response->isRedirect('https://kanuu.io/manage/some_team/some_nonce'));
 
         // And we got that URL from Kanuu.
-        $this->assertKanuuHttpCallWasSent();
+        $this->assertNonceCallWasSent();
     }
 }
