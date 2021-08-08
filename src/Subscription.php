@@ -55,6 +55,26 @@ class Subscription
         return $this->isSubscribed;
     }
 
+    public function isCancelled(): bool
+    {
+        return $this->status === 'cancelled';
+    }
+
+    public function isPaused(): bool
+    {
+        return $this->status === 'paused';
+    }
+
+    public function isPausedOrCancelled(): bool
+    {
+        return $this->isPaused() || $this->isCancelled();
+    }
+
+    public function onGracePeriod(): bool
+    {
+        return $this->isPausedOrCancelled() && $this->isSubscribed();
+    }
+
     public function getStatus(): string
     {
         return $this->status;
