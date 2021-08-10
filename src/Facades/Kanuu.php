@@ -16,6 +16,7 @@ use Kanuu\Laravel\Subscription;
  * @method static string getIdentifier(mixed $identifier)
  * @method static Subscription getSubscription(mixed $identifier)
  * @method static Subscription getCachedSubscription(mixed $identifier)
+ * @method static void flushCachedSubscription(mixed $identifier)
  * @method static \Kanuu\Laravel\Kanuu cacheFor(DateTimeInterface|DateInterval|int $cacheFor)
  * @method static \Kanuu\Laravel\Kanuu getModelUsing(Closure $modelResolver)
  * @method static \Kanuu\Laravel\Kanuu on(string $event, Closure $webhookHandler)

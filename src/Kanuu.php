@@ -51,6 +51,11 @@ class Kanuu
     {
         $nonce = $this->getNonce($identifier);
 
+        // Flush the local cache before redirecting the customer
+        // since it is likely that changes will happen by the
+        // time the customer goes back to the application.
+        $this->flushCachedSubscription($identifier);
+
         return redirect($nonce['url']);
     }
 
@@ -99,9 +104,21 @@ class Kanuu
      */
     public function getCachedSubscription($identifier): Subscription
     {
+        $identifier = $this->getIdentifier($identifier);
+
         Cache::remember("kanuu.$identifier", $this->cacheFor, function () use ($identifier) {
             return $this->getSubscription($identifier);
         });
+    }
+
+    /**
+     * @param mixed $identifier
+     */
+    public function flushCachedSubscription($identifier): void
+    {
+        $identifier = $this->getIdentifier($identifier);
+
+        Cache::forget("kanuu.$identifier");
     }
 
     /**
