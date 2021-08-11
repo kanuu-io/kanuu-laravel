@@ -2,7 +2,6 @@
 
 namespace Kanuu\Laravel\Tests;
 
-use Illuminate\Http\Client\Request;
 use Kanuu\Laravel\Facades\Kanuu;
 
 /**
@@ -26,6 +25,6 @@ class GetNonceTest extends TestCase
         $this->assertEquals($mockedResponse, $response);
 
         // And we sent the right request to Kanuu.
-        $this->assertKanuuHttpCallWasSent();
+        $this->assertNonceCallWasSent();
     }
 }

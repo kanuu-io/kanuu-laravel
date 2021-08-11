@@ -31,7 +31,7 @@ class RedirectToKanuuControllerTest extends TestCase
         $response->assertRedirect('https://kanuu.io/manage/some_team/some_nonce');
 
         // And we got that URL from Kanuu.
-        $this->assertKanuuHttpCallWasSent();
+        $this->assertNonceCallWasSent();
     }
 
     /** @test */
@@ -64,7 +64,7 @@ class RedirectToKanuuControllerTest extends TestCase
         $response->assertRedirect('https://kanuu.io/manage/some_team/some_nonce');
 
         // And we got that URL from Kanuu.
-        $this->assertKanuuHttpCallWasSent();
+        $this->assertNonceCallWasSent();
     }
 
     /** @test */
@@ -87,6 +87,6 @@ class RedirectToKanuuControllerTest extends TestCase
         $response->assertRedirect('https://kanuu.io/manage/some_team/some_nonce');
 
         // And we got that URL from Kanuu.
-        $this->assertKanuuHttpCallWasSent();
+        $this->assertNonceCallWasSent();
     }
 }

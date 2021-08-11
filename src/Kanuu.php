@@ -3,9 +3,12 @@
 namespace Kanuu\Laravel;
 
 use Closure;
+use DateInterval;
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route as RouteFacade;
 use Illuminate\Support\Str;
@@ -25,6 +28,9 @@ class Kanuu
     /** @var array */
     protected $webhookHandlers = [];
 
+    /** @var DateTimeInterface|DateInterval|int */
+    protected $cacheFor = 3600;
+
     /**
      * Kanuu constructor.
      * @param string $apiKey
@@ -38,14 +44,34 @@ class Kanuu
 
     /**
      * @param mixed $identifier
+     * @return RedirectResponse
+     * @throws KanuuSubscriptionMissingException
+     */
+    public function redirect($identifier): RedirectResponse
+    {
+        $nonce = $this->getNonce($identifier);
+
+        // Flush the local cache before redirecting the customer
+        // since it is likely that changes will happen by the
+        // time the customer goes back to the application.
+        $this->flushCachedSubscription($identifier);
+
+        return redirect($nonce['url']);
+    }
+
+    /**
+     * @param mixed $identifier
+     * @param array|null $supplemental
      * @return array
      * @throws KanuuSubscriptionMissingException
      */
-    public function getNonce($identifier): array
+    public function getNonce($identifier, ?array $supplemental = null): array
     {
         $url = $this->getUrl('api/nonce');
-        $data = ['identifier' => $this->getIdentifier($identifier)];
-        $response = Http::withToken($this->apiKey)->post($url, $data);
+        $response = Http::withToken($this->apiKey)->post($url, [
+            'identifier' => $this->getIdentifier($identifier),
+            'supplemental' => $supplemental,
+        ]);
 
         if ($response->status() === 402) {
             throw new KanuuSubscriptionMissingException();
@@ -56,14 +82,43 @@ class Kanuu
 
     /**
      * @param mixed $identifier
-     * @return RedirectResponse
+     * @return Subscription
      * @throws KanuuSubscriptionMissingException
      */
-    public function redirect($identifier): RedirectResponse
+    public function getSubscription($identifier): Subscription
     {
-        $nonce = $this->getNonce($identifier);
+        $url = $this->getUrl('api/subscription');
+        $data = ['identifier' => $this->getIdentifier($identifier)];
+        $response = Http::withToken($this->apiKey)->post($url, $data);
 
-        return redirect($nonce['url']);
+        if ($response->status() === 402) {
+            throw new KanuuSubscriptionMissingException();
+        }
+
+        return Subscription::fromKanuu($response->json());
+    }
+
+    /**
+     * @param mixed $identifier
+     * @return Subscription
+     */
+    public function getCachedSubscription($identifier): Subscription
+    {
+        $identifier = $this->getIdentifier($identifier);
+
+        Cache::remember("kanuu.$identifier", $this->cacheFor, function () use ($identifier) {
+            return $this->getSubscription($identifier);
+        });
+    }
+
+    /**
+     * @param mixed $identifier
+     */
+    public function flushCachedSubscription($identifier): void
+    {
+        $identifier = $this->getIdentifier($identifier);
+
+        Cache::forget("kanuu.$identifier");
     }
 
     /**
@@ -94,6 +149,17 @@ class Kanuu
         }
 
         return (string) $identifier;
+    }
+
+    /**
+     * @param DateTimeInterface|DateInterval|int $cacheFor
+     * @return $this
+     */
+    public function cacheFor($cacheFor): Kanuu
+    {
+        $this->cacheFor = $cacheFor;
+
+        return $this;
     }
 
     /**
