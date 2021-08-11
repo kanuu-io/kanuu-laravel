@@ -15,13 +15,13 @@ class Subscription
     /** @var string */
     protected $status;
 
-    /** @var int */
+    /** @var int|null */
     protected $planId;
 
-    /** @var int */
+    /** @var int|null */
     protected $subscriptionId;
 
-    public function __construct(bool $isTrialing, bool $isSubscribed, string $status, int $planId, int $subscriptionId)
+    public function __construct(bool $isTrialing, bool $isSubscribed, string $status, ?int $planId, ?int $subscriptionId)
     {
         $this->isTrialing = $isTrialing;
         $this->isSubscribed = $isSubscribed;
@@ -87,12 +87,12 @@ class Subscription
         return $this->status;
     }
 
-    public function getPlanId(): int
+    public function getPlanId(): ?int
     {
         return $this->planId;
     }
 
-    public function getSubscriptionId(): int
+    public function getSubscriptionId(): ?int
     {
         return $this->subscriptionId;
     }
