@@ -106,7 +106,7 @@ class Kanuu
     {
         $identifier = $this->getIdentifier($identifier);
 
-        Cache::remember("kanuu.$identifier", $this->cacheFor, function () use ($identifier) {
+        return Cache::remember("kanuu.$identifier", $this->cacheFor, function () use ($identifier) {
             return $this->getSubscription($identifier);
         });
     }
