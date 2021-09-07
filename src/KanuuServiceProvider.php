@@ -38,10 +38,6 @@ class KanuuServiceProvider extends ServiceProvider
 
     protected function resolveKanuuManager(): Kanuu
     {
-        if (! $apiKey = config('kanuu.api_key')) {
-            throw new KanuuApiKeyMissingException();
-        }
-
-        return new Kanuu($apiKey, config('kanuu.base_url'));
+        return new Kanuu(config('kanuu.api_key'), config('kanuu.base_url'));
     }
 }

@@ -12,11 +12,12 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route as RouteFacade;
 use Illuminate\Support\Str;
+use Kanuu\Laravel\Exceptions\KanuuApiKeyMissingException;
 use Kanuu\Laravel\Exceptions\KanuuSubscriptionMissingException;
 
 class Kanuu
 {
-    /** @var string */
+    /** @var string|null */
     protected $apiKey;
 
     /** @var string */
@@ -33,10 +34,10 @@ class Kanuu
 
     /**
      * Kanuu constructor.
-     * @param string $apiKey
+     * @param string|null $apiKey
      * @param string $baseUrl
      */
-    public function __construct(string $apiKey, string $baseUrl)
+    public function __construct(?string $apiKey, string $baseUrl)
     {
         $this->apiKey = $apiKey;
         $this->baseUrl = $baseUrl;
@@ -63,10 +64,11 @@ class Kanuu
      * @param mixed $identifier
      * @param array|null $supplemental
      * @return array
-     * @throws KanuuSubscriptionMissingException
+     * @throws KanuuSubscriptionMissingException|KanuuApiKeyMissingException
      */
     public function getNonce($identifier, ?array $supplemental = null): array
     {
+        $this->ensureHasApiKey();
         $url = $this->getUrl('api/nonce');
         $response = Http::withToken($this->apiKey)->post($url, [
             'identifier' => $this->getIdentifier($identifier),
@@ -83,10 +85,11 @@ class Kanuu
     /**
      * @param mixed $identifier
      * @return Subscription
-     * @throws KanuuSubscriptionMissingException
+     * @throws KanuuSubscriptionMissingException|KanuuApiKeyMissingException
      */
     public function getSubscription($identifier): Subscription
     {
+        $this->ensureHasApiKey();
         $url = $this->getUrl('api/subscription');
         $data = ['identifier' => $this->getIdentifier($identifier)];
         $response = Http::withToken($this->apiKey)->post($url, $data);
@@ -225,5 +228,15 @@ class Kanuu
     public function webhookRoute(string $url = 'webhooks/paddle'): Route
     {
         return RouteFacade::post($url, HandlePaddleWebhook::class);
+    }
+
+    /**
+     * @throws KanuuApiKeyMissingException
+     */
+    protected function ensureHasApiKey()
+    {
+        if (! $this->apiKey) {
+            throw new KanuuApiKeyMissingException();
+        }
     }
 }
