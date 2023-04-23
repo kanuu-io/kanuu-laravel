@@ -23,10 +23,8 @@ jobs:
         exclude:
           - laravel: 10.*
             php: 8.0
-        exclude:
           - laravel: 9.*
             php: 8.2
-        exclude:
           - laravel: 8.*
             php: 8.2
 
